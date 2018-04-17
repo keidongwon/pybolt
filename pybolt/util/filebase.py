@@ -1,7 +1,7 @@
 import os
 import sys
 from collections import OrderedDict
-import commentjson
+import json
 
 
 class FileBase:
@@ -19,7 +19,7 @@ class FileBase:
             sys.exit()
 
         with open(path, "r") as _file:
-            self.values = commentjson.loads(_file.read(), object_pairs_hook=OrderedDict)
+            self.values = json.loads(_file.read(), object_pairs_hook=OrderedDict)
         result = "%s loaded" % filename
         return result
 
