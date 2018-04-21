@@ -13,15 +13,12 @@ class FileBase:
         if path is None:
             path = os.getcwd() + "/data"
         path += "/%s.json" % os.path.splitext(filename)[0]
-
-        if not os.path.exists(path):
-            print("error: path not exist - ", path)
-            sys.exit()
-
-        with open(path, "r") as _file:
-            self.values = json.loads(_file.read(), object_pairs_hook=OrderedDict)
-        result = "%s loaded" % filename
-        return result
+        
+        try:
+            with open(path, "r") as _file:
+                self.values = json.loads(_file.read(), object_pairs_hook=OrderedDict)
+        except IOError as ioe:
+            raise
 
     def get(self, key1, key2=None):
         if key2 is None:
