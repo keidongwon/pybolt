@@ -5,12 +5,12 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy import exc
 
-# engine = None
 logger = logging.getLogger()
 
 
 class AlchemyPool:
     def __init__(self):
+        print("AlchemyPool")
         self.engine = None
 
     @staticmethod
