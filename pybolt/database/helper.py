@@ -1,3 +1,7 @@
+import datetime
+import decimal
+import json
+
 
 def dict_value_pad(key):
     if type(key) is type(int):
@@ -31,3 +35,33 @@ def update_from_dict(table, data, condition):
 
     sql += u' WHERE %s' % condition
     return sql
+
+
+def count_str(instance, table, key, value):
+    sql = "SELECT COUNT(*) FROM %s WHERE %s='%s'" % (table, key, value)
+    result = instance.query(sql)
+    return result[0][0]
+
+
+def count_int(instance, table, key, value):
+    sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
+    result = instance.query(sql)
+    return result[0][0]
+
+
+
+def alchemyencoder(obj):
+    """JSON encoder function for SQLAlchemy special classes."""
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
+    return None
+
+
+def query_json(instance, table, condition):
+    sql = "SELECT * FROM %s WHERE %s" % (table, condition)
+    result = instance.query(sql)
+    dumps = json.dumps([dict(r) for r in result], default=alchemyencoder)
+    decode = json.loads(dumps)
+    return json.dumps(decode[0])

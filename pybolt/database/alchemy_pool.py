@@ -45,7 +45,7 @@ class AlchemyPool:
     def execute(self, sql):
         result = True
         try:
-            sql = sql.encode('utf-8')
+            # sql = sql.encode('utf-8')
             conn = self.get_connection()
             trans = conn.begin()
             conn.execute(sql)

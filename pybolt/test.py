@@ -5,8 +5,7 @@ import logging
 from sqlalchemy import exc
 import log.rotation_log
 from bcrypt.crypto_manager import AESCipher
-from database.alchemy_pool import AlchemyPool
-
+from database.alchemy_pool import thealchemy
 
 def alchemyencoder(obj):
     """JSON encoder function for SQLAlchemy special classes."""
@@ -17,9 +16,9 @@ def alchemyencoder(obj):
     return None
 
 # test = None
-# test = "database"
+test = "database"
 # test = "log"
-test = "crypto"
+# test = "crypto"
 
 if test == "crypto":
     shakey = b'abcdefghijklmnopqrstuvwxyz123456'
@@ -38,13 +37,13 @@ if test == "crypto":
 
 elif test == "database":
     connect_string = "%s://%s:%s@%s:%d/%s" % \
-        ('mysql', 'keidw', 'dkdiskal', 'localhost', 3306, 'company')
-    AlchemyPool.create_pool(connect_string, 0)
+        ('mysql', 'fullpath', 'fullpath', 'localhost', 3306, 'fullpath')  # db, uid, pwd, host, port, dbname
+    thealchemy.create_pool(connect_string, 0)
     try:
-        sql = "SELECT * FROM member WHERE uid = 'tetris'"
-        ret = AlchemyPool.query(sql)
-        result = json.dumps([dict(r) for r in ret], default=alchemyencoder)
-        decode = json.loads(result)
+        sql = "SELECT * FROM member WHERE uid = 'keidw'"
+        result = thealchemy.query(sql)
+        dumps = json.dumps([dict(r) for r in result], default=alchemyencoder)
+        decode = json.loads(dumps)
         print(json.dumps(decode[0]))
     except exc.DBAPIError:
         print("except")
