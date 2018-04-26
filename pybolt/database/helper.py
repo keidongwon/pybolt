@@ -21,7 +21,7 @@ class AchemyHelper:
         sql += ' ('
         sql += ', '.join(data)
         sql += ') VALUES ('
-        sql += ', '.join(map(dict_value_pad, data.values()))
+        sql += ', '.join(map(self.dict_value_pad, data.values()))
         sql += ');'
         return sql
 
@@ -45,11 +45,15 @@ class AchemyHelper:
     def count_str(self, table, key, value):
         sql = "SELECT COUNT(*) FROM %s WHERE %s='%s'" % (table, key, value)
         result = self.instance.query(sql)
+        if result is None:
+            return -1
         return result[0][0]
 
     def count_int(self, table, key, value):
         sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
         result = self.instance.query(sql)
+        if result is None:
+            return -1
         return result[0][0]
 
     def alchemyencoder(self, obj):
