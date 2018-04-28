@@ -32,7 +32,8 @@ class AlchemyPool:
             self.engine = create_engine(connect_string)
         else:
             self.engine = \
-                create_engine(connect_string, pool_size=poolsize, pool_recycle=3600, max_overflow=0)
+                create_engine(connect_string, pool_size=poolsize,
+                              pool_recycle=3600, max_overflow=0)
 
     # @staticmethod
     # def get_connection():
@@ -74,5 +75,6 @@ class AlchemyPool:
     def query_json(self, sql):
         result = self.query(sql)
         return json.dumps([dict(r) for r in result], default=AlchemyPool.alchemyencoder)
+
 
 thealchemy = AlchemyPool()

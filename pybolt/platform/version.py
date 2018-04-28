@@ -20,7 +20,7 @@ class Version(FileBase):
                 return False
         except:
             return False
-            
+
         return True
 
     def make(self, request, method=""):
