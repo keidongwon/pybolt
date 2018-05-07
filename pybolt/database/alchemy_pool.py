@@ -4,13 +4,13 @@ import logging
 import json
 from sqlalchemy import create_engine
 from sqlalchemy import exc
+from pybolt.util.singleton import Singleton
 
-logger = logging.getLogger()
+# logger = logging.getLogger()
 
 
-class AlchemyPool:
+class AlchemyPool(Singleton):
     def __init__(self):
-        print("AlchemyPool")
         self.engine = None
 
     @staticmethod

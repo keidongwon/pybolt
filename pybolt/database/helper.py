@@ -1,11 +1,11 @@
 import datetime
 import decimal
 import json
+from pybolt.util.singleton import Singleton
 
 
-class AchemyHelper:
+class AchemyHelper(Singleton):
     def __init__(self):
-        print("AchemyHelper")
         self.instance = None
         
     def set_instance(self, value):
@@ -51,6 +51,7 @@ class AchemyHelper:
 
     def count_int(self, table, key, value):
         sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
+        print(sql)
         result = self.instance.query(sql)
         if result is None:
             return -1
