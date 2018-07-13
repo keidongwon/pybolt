@@ -41,6 +41,13 @@ class AchemyHelper(Singleton):
 
         sql += ' WHERE %s' % condition
         return sql
+        
+    def count(self, table):
+        sql = "SELECT COUNT(*) FROM %s" % (table)
+        result = self.instance.query(sql)
+        if result is None:
+            return -1
+        return result[0][0]
 
     def count_str(self, table, key, value):
         sql = "SELECT COUNT(*) FROM %s WHERE %s='%s'" % (table, key, value)
@@ -51,7 +58,6 @@ class AchemyHelper(Singleton):
 
     def count_int(self, table, key, value):
         sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
-        print(sql)
         result = self.instance.query(sql)
         if result is None:
             return -1
