@@ -42,22 +42,18 @@ class AchemyHelper(Singleton):
         sql += ' WHERE %s' % condition
         return sql
         
-    def count(self, table):
+    def total_count(self, table):
         sql = "SELECT COUNT(*) FROM %s" % (table)
         result = self.instance.query(sql)
         if result is None:
             return -1
         return result[0][0]
 
-    def count_str(self, table, key, value):
-        sql = "SELECT COUNT(*) FROM %s WHERE %s='%s'" % (table, key, value)
-        result = self.instance.query(sql)
-        if result is None:
-            return -1
-        return result[0][0]
-
-    def count_int(self, table, key, value):
-        sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
+    def count(self, table, key, value):
+        if isinstance(value, int):
+            sql = "SELECT COUNT(*) FROM %s WHERE %s=%s" % (table, key, value)
+        else:
+            sql = "SELECT COUNT(*) FROM %s WHERE %s='%s'" % (table, key, value)
         result = self.instance.query(sql)
         if result is None:
             return -1
@@ -71,8 +67,11 @@ class AchemyHelper(Singleton):
             return float(obj)
         return None
 
-    def query_json(self, table, condition):
-        sql = "SELECT * FROM %s WHERE %s" % (table, condition)
+    def query_json(self, table, condition=None):
+        if condition is not None:
+            sql = "SELECT * FROM %s %s" % (table, condition)
+        else:
+            sql = "SELECT * FROM %s" % (table,)
         result = self.instance.query(sql)
         dumps = json.dumps([dict(r) for r in result], default=self.alchemyencoder)
         decode = json.loads(dumps)
