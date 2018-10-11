@@ -60,6 +60,24 @@ class AlchemyPool(Singleton):
         return result
 
     # @staticmethod
+    # def execute(sql):
+    def insert(self, sql):
+        result = True
+        try:
+            conn = self.get_connection()
+            trans = conn.begin()
+            proxy = conn.execute(sql)
+            trans.commit()
+            result = proxy.lastrowid
+        except exc.DBAPIError as e:
+            result = False
+            trans.rollback()
+            print("except : ", e)
+        finally:
+            conn.close()
+        return result
+
+    # @staticmethod
     # def query(sql):
     def query(self, sql):
         try:

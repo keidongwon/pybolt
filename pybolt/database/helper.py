@@ -29,16 +29,19 @@ class AchemyHelper(Singleton):
         sql = 'UPDATE ' + table
         sql += ' SET '
         count = 0
-
         for key, value in data.items():
+            if count is not 0 and count < len(data) and value is not None:
+                sql += ', '
             if type(value) is type(int):
                 sql += "%s=%s" % (key, value)
+            elif value == "CURRENT_TIMESTAMP":
+                sql += "%s=%s" % (key, value)
+            elif value is None:
+                count += 1
+                continue
             else:
                 sql += "%s='%s'" % (key, value)
-            if count < len(data)-1:
-                sql += ', '
             count += 1
-
         sql += ' WHERE %s' % condition
         return sql
         
