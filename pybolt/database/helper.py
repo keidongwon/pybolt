@@ -90,6 +90,6 @@ class AchemyHelper(Singleton):
         if len(decode) == 0:
             return None
         return decode
-        # return json.dumps(decode[0])
+
 
 alchemyhelper = AchemyHelper()

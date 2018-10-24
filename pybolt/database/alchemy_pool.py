@@ -93,6 +93,8 @@ class AlchemyPool(Singleton):
         if result is None:
             return None
         else:
-            return json.dumps([dict(r) for r in result], default=AlchemyPool.alchemyencoder)
+            encode = json.dumps([dict(r) for r in result], default=AlchemyPool.alchemyencoder)
+            decode = json.loads(encode)
+            return decode
 
 thealchemy = AlchemyPool()
