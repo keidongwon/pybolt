@@ -26,14 +26,21 @@ class AlchemyPool(Singleton):
         return None
 
     # @staticmethod
-    def create_pool(self, connect_string, poolsize=10):
+    def create_pool(self, connect_string,
+                    enc='utf8',
+                    poolsize=5,
+                    poolrecycle=-1,
+                    maxoverflow=10):
         # global engine
         if poolsize == 0 or poolsize == 1:
-            self.engine = create_engine(connect_string)
+            self.engine = create_engine(connect_string, encoding=enc)
         else:
             self.engine = \
-                create_engine(connect_string, pool_size=poolsize,
-                              pool_recycle=3600, max_overflow=0)
+                create_engine(connect_string,
+                              encoding=enc,
+                              pool_size=poolsize,
+                              pool_recycle=poolrecycle,
+                              max_overflow=maxoverflow)
 
     # @staticmethod
     def get_connection(self):
@@ -96,5 +103,6 @@ class AlchemyPool(Singleton):
             encode = json.dumps([dict(r) for r in result], default=AlchemyPool.alchemyencoder)
             decode = json.loads(encode)
             return decode
+
 
 thealchemy = AlchemyPool()
