@@ -21,6 +21,9 @@ class FileBase:
             raise
 
     def get(self, key1, key2=None):
-        if key2 is None:
-            return self.values[key1]
-        return self.values[key1][key2]
+        try:
+            if key2 is None:
+                return self.values[key1]
+            return self.values[key1][key2]
+        except:
+            return None
