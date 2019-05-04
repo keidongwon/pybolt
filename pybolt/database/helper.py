@@ -85,6 +85,8 @@ class AchemyHelper(Singleton):
         else:
             sql = "SELECT * FROM %s" % (table,)
         result = self.instance.query(sql)
+        if result is None:
+            return None
         dumps = json.dumps([dict(r) for r in result], default=self.alchemyencoder)
         decode = json.loads(dumps)
         if len(decode) == 0:
