@@ -7,8 +7,6 @@ from sqlalchemy import exc
 from sqlalchemy import text
 from pybolt.util.singleton import Singleton
 
-# logger = logging.getLogger()
-
 
 class AlchemyPool(Singleton):
     def __init__(self):
@@ -25,13 +23,11 @@ class AlchemyPool(Singleton):
             return float(obj)
         return None
 
-    # @staticmethod
     def create_pool(self, connect_string,
                     enc='utf8',
                     poolsize=5,
                     poolrecycle=-1,
                     maxoverflow=10):
-        # global engine
         if poolsize == 0 or poolsize == 1:
             self.engine = create_engine(connect_string, encoding=enc)
         else:
@@ -42,59 +38,73 @@ class AlchemyPool(Singleton):
                               pool_recycle=poolrecycle,
                               max_overflow=maxoverflow)
 
-    # @staticmethod
     def get_connection(self):
-        # global engine
-        return self.engine.connect()
+        get_conn = None
+        try:
+            get_conn = self.engine.connect()
+        except exc.DBAPIError as e:
+            logging.getLogger().info("alchemy_pool.get_connection - exception : %s", e)
+        return get_conn
 
-    # @staticmethod
     def execute(self, sql):
         result = True
+        conn = None
+        trans = None
         try:
-            # sql = sql.encode('utf-8')
             conn = self.get_connection()
+            if conn is None:
+                return None
             trans = conn.begin()
             conn.execute(sql)
             trans.commit()
         except exc.DBAPIError as e:
             result = False
-            trans.rollback()
-            print("except : ", e)
+            if trans is not None:
+                trans.rollback()
+            logging.getLogger().info("alchemy_pool.execute - exception : %s", e)
         finally:
-            conn.close()
+            if conn is not None:
+                conn.close()
         return result
 
-    # @staticmethod
     def insert(self, sql):
-        result = True
+        result = None
+        conn = None
+        trans = None
         try:
             conn = self.get_connection()
+            if conn is None:
+                return result
             trans = conn.begin()
             proxy = conn.execute(sql)
             trans.commit()
             result = proxy.lastrowid
         except exc.DBAPIError as e:
             result = False
-            trans.rollback()
-            print("except : ", e)
+            if trans is not None:
+                trans.rollback()
+            logging.getLogger().info("alchemy_pool.insert - exception : %s", e)
         finally:
-            conn.close()
+            if conn is not None:
+                conn.close()
         return result
 
-    # @staticmethod
     def query(self, sql, like=None):
+        conn = None
         try:
             conn = self.get_connection()
+            if conn is None:
+                return None
             if like is None:
                 return conn.execute(sql).fetchall()
             else:
                 return conn.execute(text(sql), value=like).fetchall()
         except exc.DBAPIError as e:
-            print("except : ", e)
+            logging.getLogger().info("alchemy_pool.query - exception : %s", e)
         finally:
-            conn.close()
+            if conn is not None:
+                conn.close()
 
-    # @staticmethod
     def query_json(self, sql, like=None):
         result = self.query(sql, like)
         if result is None:
