@@ -1,7 +1,6 @@
 import os
-import sys
-from collections import OrderedDict
 import json
+from collections import OrderedDict
 
 
 class FileBase:
@@ -26,5 +25,5 @@ class FileBase:
             if key2 is None:
                 return self.values[key1]
             return self.values[key1][key2]
-        except:
+        except KeyError:
             return None

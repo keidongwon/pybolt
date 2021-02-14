@@ -9,4 +9,3 @@ class PrettyPrinterUtf8(pprint.PrettyPrinter):
             _object = unicode(_object, 'utf8')
             return "'%s'" % _object.encode('utf8'), True, False
         return pprint.PrettyPrinter.format(self, _object, context, maxlevels, level)
-
